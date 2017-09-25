@@ -31,21 +31,21 @@ describe RsyncCron::CLI do
   it "must return early for missing src" do
     cli = RsyncCron::CLI.new(["--cron=#{cron}", "--dest=/tmp"], io)
     cli.call(shell).must_be_nil
-    io.string.must_be_empty
+    io.string.must_equal "specify valid src\n"
     temp.read.must_be_empty
   end
 
   it "must return early for missing dest" do
     cli = RsyncCron::CLI.new(["--cron=#{cron}", "--src=/"], io)
     cli.call(shell).must_be_nil
-    io.string.must_be_empty
+    io.string.must_equal "specify valid dest\n"
     temp.read.must_be_empty
   end
 
   it "must return early for missing command" do
-    cli = RsyncCron::CLI.new(["--cron=#{cron}", "--src=/", "--dest=~/noent"], io)
+    cli = RsyncCron::CLI.new(["--cron=#{cron}", "--src=/", "--dest=/noent"], io)
     cli.call(shell).must_be_nil
-    io.string.must_be_empty
+    io.string.must_equal "/noent does not exist\n"
     temp.read.must_be_empty
   end
 

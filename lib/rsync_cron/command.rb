@@ -4,12 +4,13 @@ module RsyncCron
   class Command
     NAME = `which rsync`.strip
 
-    def initialize(src:, dest:, options: Options.new, name: NAME, log: nil)
+    def initialize(src:, dest:, options: Options.new, name: NAME, log: nil, io: STDOUT)
       @src = src
       @dest = dest
       @options = options
       @name = name
       @log = log
+      @io = io
     end
 
     def to_s
@@ -18,7 +19,11 @@ module RsyncCron
     end
 
     def valid?
-      @src.exist? && @dest.exist?
+      [@src, @dest].all? do |host|
+        host.exist?.tap do |check|
+          @io.puts "#{host} does not exist" unless check
+        end
+      end
     end
 
     private def log

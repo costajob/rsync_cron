@@ -16,8 +16,9 @@ module RsyncCron
 
     def call(shell = SHELL)
       parser.parse!(@args)
-      return unless @src && @dest
-      command = Command.new(src: @src, dest: @dest, log: @log)
+      return @io.puts "specify valid src" unless @src
+      return @io.puts "specify valid dest" unless @dest
+      command = Command.new(src: @src, dest: @dest, log: @log, io: @io)
       return unless command.valid?
       Scheduler.new("#{@cron} #{command}", shell).call.tap do |res|
         @io.puts "crontab written" if res
