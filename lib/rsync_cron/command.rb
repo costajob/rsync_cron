@@ -23,7 +23,7 @@ module RsyncCron
 
     private def log
       return unless @log
-      " >> #{@log} 2>&1"
+      " >> #{File.expand_path(@log)} 2>&1"
     end
   end
 end
