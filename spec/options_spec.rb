@@ -16,8 +16,9 @@ describe RsyncCron::Options do
     options.to_s.must_equal "-vrtzp"
   end
 
-  it "must merge extra data when specified" do
-    options = RsyncCron::Options.new(extra: { "write-batch"=>"'.batch'" })
+  it "must merge options to data" do
+    options = RsyncCron::Options.new
+    options.merge({ "write-batch"=>"'.batch'" })
     options.to_s.must_equal "-vrtzp --rsh=ssh --bwlimit=5120 --exclude='DfsrPrivate' --write-batch='.batch'"
   end
 end

@@ -1,2 +1,2 @@
 require "rsync_cron/version"
-require "rsync_cron/command"
+require "rsync_cron/cli"

@@ -1,5 +1,12 @@
 module RsyncCron
   class Host
+    def self.factory(s)
+      return new(path: s) unless s.index(":")
+      remote, path = s.split(":")
+      user, ip = remote.split("@")
+      new(path: path, user: user, ip: ip)
+    end
+
     def initialize(path:, user: nil, ip: nil)
       @path = path
       @user = user
@@ -13,7 +20,7 @@ module RsyncCron
     def exist?
       return FileTest.exist?(path) unless remote?
       %x[ssh #{remote} "test -e #{path}"]
-      $?.exitstatus == 0
+      $?.exitstatus.zero?
     end
 
     private def path

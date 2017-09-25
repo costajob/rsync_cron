@@ -8,8 +8,8 @@ module RsyncCron
     }
     FLAGS = %w[v r t z p]
 
-    def initialize(data: DEFAULT, flags: FLAGS, extra: {})
-      @data = data.to_h.merge(extra)
+    def initialize(data: DEFAULT, flags: FLAGS)
+      @data = data.to_h
       @flags = flags.to_a
     end
 
@@ -17,12 +17,17 @@ module RsyncCron
       [flags, data].compact.join(" ")
     end
 
+    def merge(opt)
+      @data = @data.merge(opt)
+      self
+    end
+
     private def flags
       return if @flags.empty?
       "-#{@flags.join}"
     end
 
-    def data
+    private def data
       return if @data.empty?
       @data.reduce([]) do |acc, (opt, val)|
         acc << "--#{opt}=#{val}"
