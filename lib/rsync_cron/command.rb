@@ -14,16 +14,16 @@ module RsyncCron
 
     def to_s
       return "echo 'rsync not installed'" if @name.empty?
-      "#{@name} #{options} #{@src} #{@dest}"
+      "#{@name} #{@options} #{@src} #{@dest}#{log}"
     end
 
     def valid?
       @src.exist? && @dest.exist?
     end
 
-    private def options
-      return @options unless @log
-      @options.merge("log-file"=>@log)
+    private def log
+      return unless @log
+      " >> #{@log} 2>&1"
     end
   end
 end

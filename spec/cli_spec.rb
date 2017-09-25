@@ -3,6 +3,7 @@ require "helper"
 describe RsyncCron::CLI do
   let(:io) { StringIO.new }
   let(:temp) { Tempfile.new("foo") }
+  let(:log) { Tempfile.new(["rsync", ".log"]) }
   let(:shell) { "cat > #{temp.path}" }
   let(:cron) { "15,30,45 * * * *" }
 
@@ -21,10 +22,10 @@ describe RsyncCron::CLI do
   end
 
   it "must write rscyn command and log to specified file" do
-    cli = RsyncCron::CLI.new(["--cron=#{cron}", "--src=/", "--dest=/tmp", "--log=/var/log/rsync.log"], io)
+    cli = RsyncCron::CLI.new(["--cron=#{cron}", "--src=/", "--dest=/tmp", "--log=#{log.path}"], io)
     cli.call(shell).must_equal true
     io.string.must_equal "crontab written\n"
-    temp.read.must_equal "15,30,45 * * * * /usr/bin/rsync -vrtzp --rsh=ssh --bwlimit=5120 --exclude='DfsrPrivate' --log-file=/var/log/rsync.log / /tmp"
+    temp.read.must_equal "15,30,45 * * * * /usr/bin/rsync -vrtzp --rsh=ssh --bwlimit=5120 --exclude='DfsrPrivate' / /tmp >> #{log.path} 2>&1"
   end
 
   it "must return early for missing src" do
