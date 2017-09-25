@@ -7,6 +7,12 @@ describe RsyncCron::Cron do
     cron.to_s.must_equal "17,34 * 29 10 *"
   end
 
+  it "must intercept just first digits" do
+    cron = RsyncCron::Cron.factory("0,15,30,45")
+    cron.must_be_instance_of(RsyncCron::Cron)
+    cron.to_s.must_equal "0,15,30,45 * * * *"
+  end
+
   it "must default to anytime" do
     cron = RsyncCron::Cron.new
     cron.to_s.must_equal "* * * * *"
