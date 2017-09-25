@@ -6,7 +6,7 @@ module RsyncCron
       bwlimit: BANDWITH_LIMIT,
       exclude: "'DfsrPrivate'"
     }
-    FLAGS = %w[v r t z p]
+    FLAGS = %w[v r t z p L]
 
     def initialize(data: DEFAULT, flags: FLAGS)
       @data = data.to_h

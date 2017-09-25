@@ -23,11 +23,11 @@ describe RsyncCron::Command do
 
   it "must build the command properly" do
     rsync = RsyncCron::Command.new(src: root, dest: remote, io: io)
-    rsync.to_s.must_equal "/usr/bin/rsync -vrtzp --rsh=ssh --bwlimit=5120 --exclude='DfsrPrivate' / ringo@72.32.11.128:/yellow/submarine"
+    rsync.to_s.must_equal "/usr/bin/rsync -vrtzpL --rsh=ssh --bwlimit=5120 --exclude='DfsrPrivate' / ringo@72.32.11.128:/yellow/submarine"
   end
 
   it "must accept a log file" do
     rsync = RsyncCron::Command.new(src: root, dest: remote, log: "/var/log/rsync.log", io: io)
-    rsync.to_s.must_equal "/usr/bin/rsync -vrtzp --rsh=ssh --bwlimit=5120 --exclude='DfsrPrivate' / ringo@72.32.11.128:/yellow/submarine >> /var/log/rsync.log 2>&1"
+    rsync.to_s.must_equal "/usr/bin/rsync -vrtzpL --rsh=ssh --bwlimit=5120 --exclude='DfsrPrivate' / ringo@72.32.11.128:/yellow/submarine >> /var/log/rsync.log 2>&1"
   end
 end

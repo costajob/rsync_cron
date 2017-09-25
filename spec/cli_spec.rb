@@ -11,21 +11,21 @@ describe RsyncCron::CLI do
     cli = RsyncCron::CLI.new(["--src=/", "--dest=/tmp"], io)
     cli.call(shell).must_equal true
     io.string.must_equal "crontab written\n"
-    temp.read.must_equal "* 0 * * * /usr/bin/rsync -vrtzp --rsh=ssh --bwlimit=5120 --exclude='DfsrPrivate' / /tmp"
+    temp.read.must_equal "* 0 * * * /usr/bin/rsync -vrtzpL --rsh=ssh --bwlimit=5120 --exclude='DfsrPrivate' / /tmp"
   end
 
   it "must write rsync command with specified cron" do
     cli = RsyncCron::CLI.new(["--cron=#{cron}", "--src=/", "--dest=/tmp"], io)
     cli.call(shell).must_equal true
     io.string.must_equal "crontab written\n"
-    temp.read.must_equal "15,30,45 * * * * /usr/bin/rsync -vrtzp --rsh=ssh --bwlimit=5120 --exclude='DfsrPrivate' / /tmp"
+    temp.read.must_equal "15,30,45 * * * * /usr/bin/rsync -vrtzpL --rsh=ssh --bwlimit=5120 --exclude='DfsrPrivate' / /tmp"
   end
 
   it "must write rscyn command and log to specified file" do
     cli = RsyncCron::CLI.new(["--cron=#{cron}", "--src=/", "--dest=/tmp", "--log=#{log.path}"], io)
     cli.call(shell).must_equal true
     io.string.must_equal "crontab written\n"
-    temp.read.must_equal "15,30,45 * * * * /usr/bin/rsync -vrtzp --rsh=ssh --bwlimit=5120 --exclude='DfsrPrivate' / /tmp >> #{log.path} 2>&1"
+    temp.read.must_equal "15,30,45 * * * * /usr/bin/rsync -vrtzpL --rsh=ssh --bwlimit=5120 --exclude='DfsrPrivate' / /tmp >> #{log.path} 2>&1"
   end
 
   it "must return early for missing src" do
