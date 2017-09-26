@@ -6,7 +6,7 @@ module RsyncCron
       bwlimit: BANDWITH_LIMIT,
       exclude: "'DfsrPrivate'"
     }
-    FLAGS = %w[v r t z p L]
+    FLAGS = %w[noatime verbose archive compress]
 
     def initialize(data: DEFAULT, flags: FLAGS)
       @data = data.to_h
@@ -24,7 +24,7 @@ module RsyncCron
 
     private def flags
       return if @flags.empty?
-      "-#{@flags.join}"
+      @flags.map { |flag| "--#{flag}" }.join(" ")
     end
 
     private def data
