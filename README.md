@@ -5,7 +5,7 @@
 * [Usage](#usage)
 
 # Scope
-The scope of this gem is to wrap the `rsync` command and to trigger it via the `crontab` schedule.
+The scope of this gem is to install the specified `rsync` command into the `crontab` schedule.
 
 # Installation
 Install the gem from your shell:

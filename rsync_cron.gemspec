@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.version = RsyncCron::VERSION
   s.authors = ["costajob"]
   s.email = ["costajob@gmail.com"]
-  s.summary = "Simple wrapper around rsync, enabled by crontab"
+  s.summary = "Install specified rsync command into crontab schedule"
   s.homepage = "https://github.com/costajob/rsync_cron"
   s.license = "MIT"
   s.required_ruby_version = ">= 2.1.8"

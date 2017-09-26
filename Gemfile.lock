@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rsync_cron (1.0.5)
+    rsync_cron (1.0.6)
 
 GEM
   remote: https://rubygems.org/
