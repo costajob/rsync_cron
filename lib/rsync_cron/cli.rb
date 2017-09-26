@@ -47,11 +47,11 @@ module RsyncCron
           @dest = Host.factory(dest)
         end
 
-        opts.on("-lLOG", "--log=LOG", "log command output to specified file") do |log|
+        opts.on("-lLOG", "--log=LOG", "Log command output to specified file") do |log|
           @log = log
         end
 
-        opts.on("-oOPTS", "--opts=OPTS", "merge specified extra options") do |_opts|
+        opts.on("-oOPTS", "--opts=OPTS", "Merge specified extra options, when supported") do |_opts|
           @options << _opts
         end
 

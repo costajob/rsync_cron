@@ -64,7 +64,7 @@ describe RsyncCron::CLI do
     begin
       RsyncCron::CLI.new(%w[--help], io).call
     rescue SystemExit
-      io.string.must_equal "Usage: rsync_cron --cron='15,30 21' --src=/ --dest=/tmp --log=/var/log/rsync.log --opts=noatime,temp-dir='./temp'\n    -c, --cron=CRON                  The cron string, i.e.: '15 21 * * *'\n    -s, --src=SRC                    The rsync source, i.e. user@src.com:files\n    -d, --dest=DEST                  The rsync dest, i.e. user@dest.com:home/\n    -l, --log=LOG                    log command output to specified file\n    -o, --opts=OPTS                  merge specified extra options\n    -p, --print                      Print crontab command without installing it\n    -k, --check                      Check src and dest before installing crontab\n    -h, --help                       Prints this help\n"
+      io.string.must_equal "Usage: rsync_cron --cron='15,30 21' --src=/ --dest=/tmp --log=/var/log/rsync.log --opts=noatime,temp-dir='./temp'\n    -c, --cron=CRON                  The cron string, i.e.: '15 21 * * *'\n    -s, --src=SRC                    The rsync source, i.e. user@src.com:files\n    -d, --dest=DEST                  The rsync dest, i.e. user@dest.com:home/\n    -l, --log=LOG                    Log command output to specified file\n    -o, --opts=OPTS                  Merge specified extra options, when supported\n    -p, --print                      Print crontab command without installing it\n    -k, --check                      Check src and dest before installing crontab\n    -h, --help                       Prints this help\n"
     end
   end
 end

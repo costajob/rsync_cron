@@ -16,7 +16,7 @@ gem install rsync_cron
 
 # Warning
 Be aware that this library will write to the `crontab` file in a destructive way.  
-Do remember to take a backup of your `crontab` before installing a new one.
+Do remember to take a backup before installing a new `crontab`.
 
 # Usage
 The gem comes with a CLI interface, you can print its help by:
@@ -26,8 +26,8 @@ Usage: rsync_cron --cron='15,30 21' --src=/ --dest=/tmp --log=/var/log/rsync.log
     -c, --cron=CRON                  The cron string, i.e.: '15 21 * * *'
     -s, --src=SRC                    The rsync source, i.e. user@src.com:files
     -d, --dest=DEST                  The rsync dest, i.e. user@dest.com:home/
-    -l, --log=LOG                    log command output to specified file
-    -o, --opts=OPTS                  merge specified extra options
+    -l, --log=LOG                    Log command output to specified file
+    -o, --opts=OPTS                  Merge specified extra options, when supported
     -p, --print                      Print crontab command without installing it
     -k, --check                      Check src and dest before installing crontab
     -h, --help                       Prints this help
