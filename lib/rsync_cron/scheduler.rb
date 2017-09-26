@@ -7,9 +7,9 @@ module RsyncCron
 
     def call
       return if @shell.empty?
-      IO.popen(@shell, 'r+') do |io|
-        io.write(@content)
-        io.close_write
+      IO.popen(@shell, 'r+') do |pipe|
+        pipe.puts(@content)
+        pipe.close_write
       end
       $?.exitstatus.zero?
     end

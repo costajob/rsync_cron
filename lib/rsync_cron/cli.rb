@@ -8,20 +8,23 @@ module RsyncCron
   class CLI
     SHELL = `which crontab`.strip
 
-    def initialize(args, io = STDOUT)
+    def initialize(args, io = STDOUT, shell = SHELL)
       @args = args
       @io = io
       @cron = Cron.factory("* 0 * * *")
+      @shell = shell
     end
 
-    def call(shell = SHELL)
+    def call
       parser.parse!(@args)
       return @io.puts "specify valid src" unless @src
       return @io.puts "specify valid dest" unless @dest
       command = Command.new(src: @src, dest: @dest, log: @log, io: @io)
-      return unless command.valid?
-      Scheduler.new("#{@cron} #{command}", shell).call.tap do |res|
-        @io.puts "crontab written" if res
+      return unless command.valid? if @check
+      crontab = "#{@cron} #{command}"
+      return @io.puts crontab unless @shell
+      Scheduler.new(crontab, @shell).call.tap do |res|
+        @io.puts "new crontab installed" if res
       end
     end
 
@@ -43,6 +46,14 @@ module RsyncCron
 
         opts.on("-lLOG", "--log=LOG", "log command output to specified file") do |log|
           @log = log
+        end
+
+        opts.on("-p", "--print", "Print crontab command without installing it") do
+          @shell = nil
+        end
+
+        opts.on("-k", "--check", "Check src and dest before installing crontab") do
+          @check = true
         end
 
         opts.on("-h", "--help", "Prints this help") do

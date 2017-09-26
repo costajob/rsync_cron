@@ -12,6 +12,6 @@ describe RsyncCron::Scheduler do
     temp = Tempfile.new("foo")
     scheduler = RsyncCron::Scheduler.new(content, "cat > #{temp.path}")
     scheduler.call
-    temp.read.must_equal content
+    temp.read.must_equal "#{content}\n"
   end
 end

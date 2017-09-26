@@ -3,14 +3,12 @@ module RsyncCron
     def self.factory(s)
       return new(path: s) unless s.index(":")
       remote, path = s.split(":")
-      user, ip = remote.split("@")
-      new(path: path, user: user, ip: ip)
+      new(path: path, remote: remote)
     end
 
-    def initialize(path:, user: nil, ip: nil)
+    def initialize(path:, remote: nil)
       @path = path
-      @user = user
-      @ip = ip
+      @remote = remote
     end
 
     def to_s
@@ -30,11 +28,11 @@ module RsyncCron
 
     private def remote
       return unless remote?
-      "#{@user}@#{@ip}"
+      @remote
     end
 
     private def remote?
-      @user && @ip
+      @remote
     end
   end
 end

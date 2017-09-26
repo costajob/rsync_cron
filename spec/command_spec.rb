@@ -4,7 +4,7 @@ describe RsyncCron::Command do
   let(:io) { StringIO.new }
   let(:noent) { RsyncCron::Host.new(path: "/noent") }
   let(:root) { RsyncCron::Host.new(path: "/") }
-  let(:remote) { RsyncCron::Host.new(path: "/yellow/submarine", user: "ringo", ip: "72.32.11.128") }
+  let(:remote) { RsyncCron::Host.new(path: "/yellow/submarine", remote: "ringo@72.32.11.128") }
 
   it "must be invalid if src does not exist" do
     rsync = RsyncCron::Command.new(src: noent, dest: root, io: io)

@@ -7,53 +7,59 @@ describe RsyncCron::CLI do
   let(:shell) { "cat > #{temp.path}" }
   let(:cron) { "15,30,45 * * * *" }
 
-  it "must write rsync command with default cron" do
-    cli = RsyncCron::CLI.new(["--src=/", "--dest=/tmp"], io)
-    cli.call(shell).must_equal true
-    io.string.must_equal "crontab written\n"
-    temp.read.must_equal "* 0 * * * /usr/bin/rsync -vrtzpL --rsh=ssh --bwlimit=5120 --exclude='DfsrPrivate' / /tmp"
+  it "must install command with default cron" do
+    cli = RsyncCron::CLI.new(["--src=/", "--dest=/tmp"], io, shell)
+    cli.call.must_equal true
+    io.string.must_equal "new crontab installed\n"
+    temp.read.must_equal "* 0 * * * /usr/bin/rsync -vrtzpL --rsh=ssh --bwlimit=5120 --exclude='DfsrPrivate' / /tmp\n"
   end
 
-  it "must write rsync command with specified cron" do
-    cli = RsyncCron::CLI.new(["--cron=#{cron}", "--src=/", "--dest=/tmp"], io)
-    cli.call(shell).must_equal true
-    io.string.must_equal "crontab written\n"
-    temp.read.must_equal "15,30,45 * * * * /usr/bin/rsync -vrtzpL --rsh=ssh --bwlimit=5120 --exclude='DfsrPrivate' / /tmp"
+  it "must install command with specified cron" do
+    cli = RsyncCron::CLI.new(["--cron=#{cron}", "--src=/", "--dest=/tmp"], io, shell)
+    cli.call.must_equal true
+    io.string.must_equal "new crontab installed\n"
+    temp.read.must_equal "15,30,45 * * * * /usr/bin/rsync -vrtzpL --rsh=ssh --bwlimit=5120 --exclude='DfsrPrivate' / /tmp\n"
   end
 
-  it "must write rscyn command and log to specified file" do
-    cli = RsyncCron::CLI.new(["--cron=#{cron}", "--src=/", "--dest=/tmp", "--log=#{log.path}"], io)
-    cli.call(shell).must_equal true
-    io.string.must_equal "crontab written\n"
-    temp.read.must_equal "15,30,45 * * * * /usr/bin/rsync -vrtzpL --rsh=ssh --bwlimit=5120 --exclude='DfsrPrivate' / /tmp >> #{log.path} 2>&1"
+  it "must install command and log to specified file" do
+    cli = RsyncCron::CLI.new(["--cron=#{cron}", "--src=/", "--dest=/tmp", "--log=#{log.path}"], io, shell)
+    cli.call.must_equal true
+    io.string.must_equal "new crontab installed\n"
+    temp.read.must_equal "15,30,45 * * * * /usr/bin/rsync -vrtzpL --rsh=ssh --bwlimit=5120 --exclude='DfsrPrivate' / /tmp >> #{log.path} 2>&1\n"
   end
 
   it "must return early for missing src" do
-    cli = RsyncCron::CLI.new(["--cron=#{cron}", "--dest=/tmp"], io)
-    cli.call(shell).must_be_nil
+    cli = RsyncCron::CLI.new(["--cron=#{cron}", "--dest=/tmp"], io, shell)
+    cli.call.must_be_nil
     io.string.must_equal "specify valid src\n"
     temp.read.must_be_empty
   end
 
   it "must return early for missing dest" do
-    cli = RsyncCron::CLI.new(["--cron=#{cron}", "--src=/"], io)
-    cli.call(shell).must_be_nil
+    cli = RsyncCron::CLI.new(["--cron=#{cron}", "--src=/"], io, shell)
+    cli.call.must_be_nil
     io.string.must_equal "specify valid dest\n"
     temp.read.must_be_empty
   end
 
-  it "must return early for missing command" do
-    cli = RsyncCron::CLI.new(["--cron=#{cron}", "--src=/", "--dest=/noent"], io)
-    cli.call(shell).must_be_nil
+  it "must check src and dest when specified" do
+    cli = RsyncCron::CLI.new(["--check", "--cron=#{cron}", "--src=/", "--dest=/noent"], io, shell)
+    cli.call.must_be_nil
     io.string.must_equal "/noent does not exist\n"
     temp.read.must_be_empty
+  end
+
+  it "must write command to specified output" do
+    cli = RsyncCron::CLI.new(["--cron=#{cron}", "--src=/", "--dest=/tmp", "--log=#{log.path}", "--print"], io, shell)
+    cli.call.must_be_nil
+    io.string.must_equal "15,30,45 * * * * /usr/bin/rsync -vrtzpL --rsh=ssh --bwlimit=5120 --exclude='DfsrPrivate' / /tmp >> #{log.path} 2>&1\n"
   end
 
   it "must print the help" do
     begin
       RsyncCron::CLI.new(%w[--help], io).call
     rescue SystemExit
-      io.string.must_equal "Usage: rsync_cron --cron=15,30 21 * * * --src=/ --dest=/tmp --log=/var/log/rsync.log\n    -c, --cron=CRON                  The cron string, i.e.: 15 21 * * *\n    -s, --src=SRC                    The rsync source, i.e. user@src.com:files\n    -d, --dest=DEST                  The rsync dest, i.e. user@dest.com:home/\n    -l, --log=LOG                    log command output to specified file\n    -h, --help                       Prints this help\n"
+      io.string.must_equal "Usage: rsync_cron --cron=15,30 21 * * * --src=/ --dest=/tmp --log=/var/log/rsync.log\n    -c, --cron=CRON                  The cron string, i.e.: 15 21 * * *\n    -s, --src=SRC                    The rsync source, i.e. user@src.com:files\n    -d, --dest=DEST                  The rsync dest, i.e. user@dest.com:home/\n    -l, --log=LOG                    log command output to specified file\n    -p, --print                      Print crontab command without installing it\n    -k, --check                      Check src and dest before installing crontab\n    -h, --help                       Prints this help\n"
     end
   end
 end

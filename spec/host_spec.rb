@@ -13,14 +13,14 @@ describe RsyncCron::Host do
     host.to_s.must_equal "john@72.32.11.128:/hey/bulldog"
   end
 
-  it "must be represented as a string" do
-    host = RsyncCron::Host.new(path: "/yellow/submarine", user: "ringo", ip: "72.32.11.128")
-    host.to_s.must_equal "ringo@72.32.11.128:/yellow/submarine"
+  it "must be represented by path" do
+    host = RsyncCron::Host.new(path: "/you/say/goodbye")
+    host.to_s.must_equal "/you/say/goodbye"
   end
 
-  it "must omit remote when not specified" do
-    host = RsyncCron::Host.new(path: "/you/say/goodbye", user: "paul")
-    host.to_s.must_equal "/you/say/goodbye"
+  it "must be represented by path and remote" do
+    host = RsyncCron::Host.new(path: "/yellow/submarine", remote: "YellowSubmarine")
+    host.to_s.must_equal "YellowSubmarine:/yellow/submarine"
   end
 
   it "must check for local path existence" do
