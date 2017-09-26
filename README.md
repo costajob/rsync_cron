@@ -2,6 +2,7 @@
 
 * [Scope](#scope)
 * [Installation](#installation)
+* [Warning](#warning)
 * [Usage](#usage)
 
 # Scope
@@ -12,6 +13,10 @@ Install the gem from your shell:
 ```shell
 gem install rsync_cron
 ```
+
+# Warning
+Be aware that this library will write to the `crontab` file in a destructive way.  
+Do remember to take a backup of your `crontab` before installing a new one.
 
 # Usage
 The gem comes with a CLI interface, you can print its help by:
