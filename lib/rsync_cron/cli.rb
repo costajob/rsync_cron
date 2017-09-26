@@ -1,7 +1,7 @@
 require "optparse"
 require "rsync_cron/host"
 require "rsync_cron/command"
-require "rsync_cron/scheduler"
+require "rsync_cron/installer"
 require "rsync_cron/cron"
 
 module RsyncCron
@@ -23,7 +23,7 @@ module RsyncCron
       return unless command.valid? if @check
       crontab = "#{@cron} #{command}"
       return @io.puts crontab unless @shell
-      Scheduler.new(crontab, @shell).call.tap do |res|
+      Installer.new(crontab, @shell).call.tap do |res|
         @io.puts "new crontab installed" if res
       end
     end

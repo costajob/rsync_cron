@@ -1,5 +1,5 @@
 module RsyncCron
-  class Scheduler
+  class Installer
     def initialize(content, shell)
       @content = content
       @shell = shell
@@ -7,7 +7,7 @@ module RsyncCron
 
     def call
       return if @shell.empty?
-      IO.popen(@shell, "a+") do |pipe|
+      IO.popen(@shell, "r+") do |pipe|
         pipe.puts(@content)
         pipe.close_write
       end
