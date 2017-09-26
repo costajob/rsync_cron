@@ -14,7 +14,7 @@ module RsyncCron
     end
 
     def to_s
-      return "echo 'rsync not installed'" if @name.empty?
+      return @io.puts "rsync not installed" if @name.empty?
       "#{@name} #{@options} #{@src} #{@dest}#{log}"
     end
 

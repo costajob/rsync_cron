@@ -2,15 +2,33 @@ require "helper"
 
 describe RsyncCron::Cron do
   it "must be factorized by string" do
-    cron = RsyncCron::Cron.factory("17,34 33 29 10 8")
+    cron = RsyncCron::Cron.factory("17,34 21 29 10 3")
     cron.must_be_instance_of(RsyncCron::Cron)
-    cron.to_s.must_equal "17,34 * 29 10 *"
+    cron.to_s.must_equal "17,34 21 29 10 3"
   end
 
-  it "must intercept just first digits" do
+  it "must intercept just mins" do
     cron = RsyncCron::Cron.factory("0,15,30,45")
     cron.must_be_instance_of(RsyncCron::Cron)
     cron.to_s.must_equal "0,15,30,45 * * * *"
+  end
+
+  it "must intercept just mins and hour" do
+    cron = RsyncCron::Cron.factory("0,15,30,45 21")
+    cron.must_be_instance_of(RsyncCron::Cron)
+    cron.to_s.must_equal "0,15,30,45 21 * * *"
+  end
+
+  it "must intercept just mins, hour and day" do
+    cron = RsyncCron::Cron.factory("0,15,30,45 21 30")
+    cron.must_be_instance_of(RsyncCron::Cron)
+    cron.to_s.must_equal "0,15,30,45 21 30 * *"
+  end
+
+  it "must intercept just mins, hour, day and month" do
+    cron = RsyncCron::Cron.factory("0,15,30,45 21 30 12")
+    cron.must_be_instance_of(RsyncCron::Cron)
+    cron.to_s.must_equal "0,15,30,45 21 30 12 *"
   end
 
   it "must default to anytime" do

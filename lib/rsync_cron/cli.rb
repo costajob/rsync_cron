@@ -8,18 +8,21 @@ module RsyncCron
   class CLI
     SHELL = `which crontab`.strip
 
+    attr_reader :options
+
     def initialize(args, io = STDOUT, shell = SHELL)
       @args = args
       @io = io
       @cron = Cron.factory("* 0 * * *")
       @shell = shell
+      @options = Options.new
     end
 
     def call
       parser.parse!(@args)
       return @io.puts "specify valid src" unless @src
       return @io.puts "specify valid dest" unless @dest
-      command = Command.new(src: @src, dest: @dest, log: @log, io: @io)
+      command = Command.new(src: @src, dest: @dest, options: @options, log: @log, io: @io)
       return unless command.valid? if @check
       crontab = "#{@cron} #{command}"
       return @io.puts crontab unless @shell
@@ -30,9 +33,9 @@ module RsyncCron
 
     private def parser
       OptionParser.new do |opts|
-        opts.banner = "Usage: rsync_cron --cron=15,30 21 * * * --src=/ --dest=/tmp --log=/var/log/rsync.log"
+        opts.banner = "Usage: rsync_cron --cron='15,30 21' --src=/ --dest=/tmp --log=/var/log/rsync.log --opts=noatime,temp-dir='./temp'"
 
-        opts.on("-cCRON", "--cron=CRON", "The cron string, i.e.: 15 21 * * *") do |cron|
+        opts.on("-cCRON", "--cron=CRON", "The cron string, i.e.: '15 21 * * *'") do |cron|
           @cron = Cron.factory(cron)
         end
 
@@ -46,6 +49,10 @@ module RsyncCron
 
         opts.on("-lLOG", "--log=LOG", "log command output to specified file") do |log|
           @log = log
+        end
+
+        opts.on("-oOPTS", "--opts=OPTS", "merge specified extra options") do |_opts|
+          @options << _opts
         end
 
         opts.on("-p", "--print", "Print crontab command without installing it") do
